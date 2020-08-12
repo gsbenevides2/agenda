@@ -9,7 +9,8 @@
     "knex:dev:migrate": "knex --knexfile src/knexfile.ts migrate:latest",
     "knex:dev:rollback": "knex --knexfile src/knexfile.ts migrate:rollback",
     "knex:prod:migrate": "knex --knexfile dist/knexfile.js migrate:latest",
-    "knex:prod:rollback": "knex --knexfile dist/knexfile.js migrate:rollback"
+    "knex:prod:rollback": "knex --knexfile dist/knexfile.js migrate:rollback",
+    "heroku-postbuild":"yarn build && yarn knex:prod:migrate"
   },
   "devDependencies": {
     "@types/cors": "^2.8.7",
