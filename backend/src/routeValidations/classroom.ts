@@ -1,7 +1,16 @@
 import { celebrate, Joi } from 'celebrate'
 
 const classroomValidations = {
-  sync: celebrate({
+  create: celebrate({
+    headers: {
+      userid: Joi.string().required(),
+      sessionid: Joi.string().required()
+    }
+  }, { allowUnknown: true }),
+  show: celebrate({
+    query: {
+      processId: Joi.string().required()
+    },
     headers: {
       userid: Joi.string().required(),
       sessionid: Joi.string().required()

@@ -17,6 +17,23 @@ const activityValidations = {
     }
   }, { allowUnknown: true }),
   create: celebrate({
+    body: {
+      name: Joi.string().required(),
+      date: Joi.number()
+    },
+    headers: {
+      userid: Joi.string().required(),
+      sessionid: Joi.string().required()
+    }
+  }, { allowUnknown: true }),
+  uodate: celebrate({
+    params: {
+      id: Joi.string().required()
+    },
+    body: {
+      name: Joi.string().required(),
+      date: Joi.number()
+    },
     headers: {
       userid: Joi.string().required(),
       sessionid: Joi.string().required()

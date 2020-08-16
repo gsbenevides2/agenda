@@ -5,13 +5,18 @@ import db from '../database/connection'
 import validateSession from '../utils/validateSession'
 
 class AuthController {
-  async getUrl (_request:Request, response:Response) {
-    response.redirect(getAuthUrl())
+  async getUrl (request:Request, response:Response) {
+    response.redirect(
+      getAuthUrl(request.query.redirect as string)
+    )
   }
 
   async logIn (request:Request, response:Response) {
+    const code = request.query.code as string
+    const redirectUrl = request.query.redirectUrl as string
+
     try {
-      const googleData = await retriveCodeInformation(request.query.code as string)
+      const googleData = await retriveCodeInformation(code, redirectUrl)
 
       let [user] = await db('Users')
         .select('*')
@@ -62,6 +67,7 @@ class AuthController {
               message: 'Missing Google-provided permissions on authentication, try to authenticate again.'
             })
         default:
+          console.log(err)
           return response.status(400)
             .json({
               type: 'unknown_error',
@@ -108,6 +114,15 @@ class AuthController {
       .select(['name', 'email', 'picture'])
       .where({ id: userid })
     return response.json(user)
+  }
+
+  async deleteUser(request:Request, response:Response){
+    const {userid} = request.headers
+    await db('Users')
+      .delete()
+      .where({id:userid})
+
+    response.send('OK')
   }
 }
 

@@ -6,8 +6,7 @@ dotenv.config()
 
 const {
   CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URI
+  CLIENT_SECRET
 } = process.env
 
 const scopes = [
@@ -17,11 +16,11 @@ const scopes = [
   'https://www.googleapis.com/auth/classroom.courses.readonly',
   'https://www.googleapis.com/auth/classroom.student-submissions.me.readonly'
 ]
-export function getAuthUrl () {
+export function getAuthUrl (redirectUrl:string) {
   const oauth = new google.auth.OAuth2(
     CLIENT_ID,
     CLIENT_SECRET,
-    REDIRECT_URI
+    redirectUrl
   )
   const url = oauth.generateAuthUrl({
     scope: scopes,
@@ -30,14 +29,13 @@ export function getAuthUrl () {
   return url
 }
 
-export async function retriveCodeInformation (code:string) {
+export async function retriveCodeInformation (code:string, redirectUrl:string) {
   const oauth = new google.auth.OAuth2(
     CLIENT_ID,
     CLIENT_SECRET,
-    REDIRECT_URI
+    redirectUrl
   )
   function verifyConcededScopes (scopesToVerify:string[]) {
-    console.log(scopesToVerify)
     const verifiedScopes = scopes.map(scope => scopesToVerify.includes(scope))
     return verifiedScopes.every(result => result)
   }
@@ -98,8 +96,7 @@ export async function getPendentActivitiesAndTokensUpdates (accessToken:string, 
 
   const oauth = new google.auth.OAuth2(
     CLIENT_ID,
-    CLIENT_SECRET,
-    REDIRECT_URI
+    CLIENT_SECRET
   )
   oauth.on('tokens', tokens => {
     result.tokens = {

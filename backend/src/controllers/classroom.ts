@@ -4,16 +4,14 @@ import db from '../database/connection'
 import { getPendentActivitiesAndTokensUpdates } from '../services/google'
 import filterActiviyies from '../utils/filterActivities'
 
-class ClassroomController {
-  async sync (request:Request, response:Response) {
-    const { userid } = request.headers
-
+async function sync (userId:string, processId:string) {
+  try {
     const [user] = await db('Users')
       .select([
         'googleAccessToken',
         'googleRefreshToken'
       ])
-      .where({ id: userid })
+      .where({ id: userId })
     // getPendentActivities pode retornar tambem novos tokens eles devem ser salvos no db
     const googleResult = await getPendentActivitiesAndTokensUpdates(user.googleAccessToken as string, user.googleRefreshToken as string)
     if (googleResult.tokens) {
@@ -22,7 +20,7 @@ class ClassroomController {
           googleAccessToken: googleResult.tokens.accessToken,
           googleRefreshToken: googleResult.tokens.refreshToken
         })
-        .where({ id: userid })
+        .where({ id: userId })
     }
 
     const listOfActivities = await db('Activities')
@@ -32,7 +30,7 @@ class ClassroomController {
         'courseId'
       ])
       .rightJoin('ClassroomActivities', 'id', 'activityId')
-      .where({ userId: userid })
+      .where({ userId })
 
     const filtedActivities = filterActiviyies(listOfActivities, googleResult.activies)
 
@@ -65,7 +63,7 @@ class ClassroomController {
         .insert({
           name: activity.name,
           date: activity.date,
-          userId: userid
+          userId
         })
         .returning('id')
       await db('ClassroomActivities')
@@ -77,8 +75,47 @@ class ClassroomController {
           classroomUrl: activity.classroomUrl
         })
     }))
+    await db('ClassroomSync')
+      .update({ status: 'finished' })
+      .where({ userId, processId })
+  } catch (e) {
+    await db('ClassroomSync')
+      .update({ status: 'finished' })
+      .where({ userId, processId })
+  }
+}
 
-    return response.status(200).send('OK')
+class ClassroomController {
+  async create (request:Request, response:Response) {
+    const userId = request.headers.userid as string
+    const processFind = await db('ClassroomSync')
+      .select('processId')
+      .where({ userId, status: 'created' })
+      .first()
+
+    if (processFind) return response.status(201).send(processFind.processId)
+
+    const processId = (await db('ClassroomSync')
+      .insert({
+        userId,
+        status: 'created'
+      })
+      .returning('processId'))[0]
+
+    sync(userId, processId)
+    response.status(201).send(processId)
+  }
+
+  async show (request:Request, response:Response) {
+    const userId = request.headers.userid
+    const { processId } = request.query
+
+    const dbResponse = await db('ClassroomSync')
+      .select('status')
+      .where({ userId, processId })
+      .first()
+
+    return response.send(dbResponse.status)
   }
 }
 

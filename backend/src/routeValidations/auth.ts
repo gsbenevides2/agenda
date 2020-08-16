@@ -1,9 +1,15 @@
 import { celebrate, Joi } from 'celebrate'
 
 const authValidations = {
+  getUrl: celebrate({
+    query: {
+      redirect: Joi.string().required()
+    }
+  }),
   logIn: celebrate({
-    params: {
-      code: Joi.string().required()
+    query: {
+      code: Joi.string().required(),
+      redirectUrl: Joi.string().required()
     }
   }),
   logOut: celebrate({

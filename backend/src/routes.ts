@@ -9,7 +9,11 @@ import activityValidations from './routeValidations/activity'
 const routes = Router()
 
 const authController = new AuthController()
-routes.get('/authUrl', authController.getUrl)
+routes.get(
+  '/authUrl',
+  authValidations.getUrl,
+  authController.getUrl
+)
 routes.get(
   '/logIn',
   authValidations.logIn,
@@ -27,13 +31,25 @@ routes.get(
   authController.validadeAutenticatedRequest,
   authController.retriveUserData
 )
+routes.delete(
+  '/user',
+  authValidations.user,
+  authController.validadeAutenticatedRequest,
+  authController.deleteUser
+)
 
 const classroomController = new ClassroomController()
 routes.post(
-  '/classroomSync',
-  classroomValidations.sync,
+  '/classroomSync/start',
+  classroomValidations.create,
   authController.validadeAutenticatedRequest,
-  classroomController.sync
+  classroomController.create
+)
+routes.get(
+  '/classroomSync/status',
+  classroomValidations.show,
+  authController.validadeAutenticatedRequest,
+  classroomController.show
 )
 
 const activityController = new ActivityController()
@@ -54,6 +70,12 @@ routes.post(
   activityValidations.create,
   authController.validadeAutenticatedRequest,
   activityController.create
+)
+routes.put(
+  '/activity/:id',
+  activityValidations.uodate,
+  authController.validadeAutenticatedRequest,
+  activityController.update
 )
 routes.delete(
   '/activity/:id',

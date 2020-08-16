@@ -7,12 +7,10 @@ class ActivityController {
     const { userid } = request.headers
     const activities = await db('Activities')
       .select([
+        'id',
         'name',
         'date',
-        'courseWorkId',
-        'courseName',
-        'courseId',
-        'classroomUrl'
+        'courseName'
       ])
       .orderBy('date', 'asc')
       .where({
@@ -59,6 +57,20 @@ class ActivityController {
       .returning('id')
 
     response.send(id)
+  }
+
+  async update (request:Request, response:Response) {
+    const { id } = request.params
+    const { name, date } = request.body
+
+    await db('Activities')
+      .update({
+        name,
+        date: date ? new Date(date) : null
+      })
+      .where({ id })
+
+    response.send('OK')
   }
 
   async remove (request:Request, response:Response) {
