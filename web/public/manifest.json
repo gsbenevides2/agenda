@@ -1,0 +1,76 @@
+{
+  "short_name": "Agenda Escolar",
+  "name": "Agenda Escolar",
+  "icons": [
+    {
+      "src": "logo16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "logo_mask16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "purpose":"maskable"
+    },
+    {
+      "src": "logo24.png",
+      "sizes": "24x24",
+      "type": "image/png"
+    },
+    {
+      "src": "logo_mask24.png",
+      "sizes": "24x24",
+      "type": "image/png",
+      "purpose":"maskable"
+    },
+    {
+      "src": "logo32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "logo_mask32.png",
+      "sizes": "32x32",
+      "type": "image/png",
+      "purpose":"maskable"
+    },
+    {
+      "src": "logo64.png",
+      "sizes": "64x64",
+      "type": "image/png"
+    },
+    {
+      "src": "logo_mask64.png",
+      "sizes": "64x64",
+      "type": "image/png",
+      "purpose":"maskable"
+    },
+    {
+      "src": "logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "logo_mask192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose":"maskable"
+    },
+    {
+      "src": "logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "logo_mask512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose":"maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#2196F3",
+  "background_color": "#212121"
+}

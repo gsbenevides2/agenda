@@ -49,7 +49,7 @@ class AuthController {
         .returning('id')
 
       return response.send({
-        accountId: user.id,
+        userId: user.id,
         sessionId
       })
     } catch (err) {
